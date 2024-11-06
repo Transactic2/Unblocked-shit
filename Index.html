@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f4f4f9;
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        #countdown {
+            font-size: 2em;
+            color: #e63946;
+        }
+        #user-ip {
+            font-size: 1.2em;
+            margin-top: 20px;
+            color: #2a9d8f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Are you sure you want to continue?</h1>
+        <p>This action will start in <span id="countdown">10</span> seconds.</p>
+        <p id="user-ip"></p>
+    </div>
+
+    <script>
+        // Countdown Timer
+        let countdown = 10;
+        const countdownElement = document.getElementById('countdown');
+        const userIpElement = document.getElementById('user-ip');
+
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            countdownElement.textContent = countdown;
+
+            if (countdown === 0) {
+                clearInterval(countdownInterval);
+                displayUserIP();
+            }
+        }, 1000);
+
+        // Function to fetch and display IP address
+        function displayUserIP() {
+            // Fetch the user's public IP using an API
+            fetch('https://api.ipify.org?format=json')
+                .then(response => response.json())
+                .then(data => {
+                    userIpElement.textContent = `Your IP Address: ${data.ip}`;
+                })
+                .catch(error => {
+                    userIpElement.textContent = 'Could not retrieve IP address';
+                    console.error('Error fetching IP:', error);
+                });
+        }
+    </script>
+</body>
+</html>
